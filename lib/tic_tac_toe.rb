@@ -53,29 +53,84 @@ class TicTacToe
 
     def turn
         
-        isValid = true
+        position = gets.chomp
+        index = input_to_index(position)
+        isValid = valid_move?(index)
+        player = current_player
 
-        while isValid
-
+        while !isValid
             position = gets.chomp
             index = input_to_index(position)
             isValid = valid_move?(index)
+        end
+
+        move(index, player)
+        display_board
+
+        # isValid = true
+
+        # while isValid
+
+        #     position = gets.chomp
+        #     index = input_to_index(position)
+        #     isValid = valid_move?(index)
             
-            binding.pry
+        #     binding.pry
             
-            if isValid
-                move(index, current_player)
-                display_board
-                puts isValid
-                break
+        #     if isValid
+        #         move(index, current_player)
+        #         display_board
+        #         puts isValid
+        #         break
                 
-            else
-                puts "invalid"
-                puts isValid
+        #     else
+        #         puts "invalid"
+        #         puts isValid
+        #     end
+        # end
+    end
+
+    def won?        
+        WIN_COMBINATIONS.each do |combo|
+            if combo.all? {|x| board[x] == "X"} || combo.all? {|x| board[x] == "O"}
+                return combo
             end
+        end
+        return false
+    end
+
+    def full?
+        board.all? {|x| x == "X" || x == "O"}
+    end
+
+    def draw?
+        if full? && !won?
+            true
+        else
+            false
         end
     end
 
+    def over?
+        if full? && draw? || full? && won? 
+            true
+        else
+            false
+        end
+    end
+
+    def winner
+        return nil unless won?
+        won? && current_player == "X" ? "O" : "X" 
+    end
+
+    def play
+        until over? || won?    
+            turn    
+            draw? ? break : nil
+        end
+        puts "Congratulations #{winner}!" if won?
+        puts "Cat's Game!" if draw?
+    end
 
 end
-
